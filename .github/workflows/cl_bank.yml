@@ -1,0 +1,53 @@
+name: cl_bank
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 1 1 1 *"
+    - cron: "0 2 31 1 *"
+    - cron: "0 3 2 3 *"
+    - cron: "0 4 1 4 *"
+    - cron: "0 5 1 5 *"
+    - cron: "0 6 1 6 *"
+    - cron: "0 7 1 7 *"
+    - cron: "0 8 1 8 *"
+    - cron: "0 9 1 9 *"
+    - cron: "0 10 1 10 *"
+    - cron: "0 11 1 11 *"
+    - cron: "0 12 1 12 *"
+
+jobs:
+  bank:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          # Semantic version range syntax or exact version of a Python version
+          python-version: '3.8'
+          # Optional - x64 or x86 architecture, defaults to x64
+          architecture: 'x64'
+      - name: checkout actions
+        run: |
+          sudo apt-get update
+          sudo apt-get -y install git
+          sudo apt-get -y install python3-pip
+          sudo apt-get -y install python3-setuptools
+
+      - name: install env
+        run:
+          pip3 install requests onetimepass
+
+      - name: run cl_bank.py
+        env:
+          # required
+          UNAMES: ${{ secrets.UNAMES }}
+          UPASSS: ${{ secrets.UPASSS }}
+          # optional,required when use pass
+          SECRETS: ${{ secrets.SECRETS }}
+          CR_ARGS: ${{ secrets.CR_ARGS }}
+          # optional
+          DEBUG: ${{ secrets.DEBUG }}
+        run:
+          python3 cl_bank.py
